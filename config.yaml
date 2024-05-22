@@ -1,0 +1,35 @@
+params:
+  - name:
+    type:
+
+modules:
+  - name: github.com/qmonus/official-cloud-native-adapters
+    revision: v0.8.2
+
+designPatterns:
+  # Infrastructrue
+  - pattern: qmonus.net/adapter/official/kubernetes/deployment/simple
+    params:
+      appName: scraping-otp
+      k8sNamespace: $(params.k8sNamespace)
+      imageName: $(params.imageName)
+      args: 
+        - "--some"
+        - "--options"
+      env:
+        - name: "MESSAGE"
+          value: "hello world"
+        - name: "MESSAGE2"
+          value: "hello qmonus"
+      port: $(params.port)
+      replicas: $(params.replicas)
+  # CICI
+  # gitリポジトリにあるdocker imageをbuildするためのmodule
+  - pattern: qmonus.net/adapter/official/pipeline/build/kaniko
+  # アプリケーションを実行環境にdeployするためのmodule
+  - pattern: qmonus.net/adapter/official/pipeline/deploy:preview
+    pipelineParams:
+      repositoryKind: gitlab
+      resourcePriority: high
+  # コンテナイメージを検証環境から商用環境にコピーするためのmodule
+  - pattern: qmonus.net/adapter/official/pipeline/utils:imagePromoteGcp

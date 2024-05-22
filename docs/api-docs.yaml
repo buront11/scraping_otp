@@ -1,0 +1,42 @@
+openapi: '3.0.2'
+tags:
+  - name: scraping
+info:
+  title: scraping-api
+  description: generate one time password API
+  contact:
+    name: NTT Communications Corporations
+  license:
+    name: (c) 2020-2022 NTT Communications Corporation All Rights Reserved.
+  version: '1.0'
+servers:
+  - url: https://scraping-service
+paths:
+  /one_time_password:
+    post:
+      tags:
+        - scraping
+      summary: Get one time password for paloalto
+      description: Pass the serial number to get one time password for paloalto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serial_number:
+                  type: string
+                  description: Serial number for which to generate one-time password
+      responses:
+        '200':
+          description: One-time password generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  otp:
+                    type: string
+                    description: Generated one-time password
+      operationId: post-v1-one-time-password
